@@ -70,6 +70,47 @@ import shutil
 # Classes
 ###################
 
+class simDataFrame(object):
+    def __init__(self, data) -> None:
+        pass
+    def __len__(self) -> int :
+        pass
+    def __getitem__(self, key):
+        pass
+    def __setitem__(self,key,value) -> None:
+        pass
+    def __str__(self) -> str:
+        pass
+    def __repr__(self) -> str:
+        pass
+    def to_pandas(self) -> pd.DataFrame :
+        pass
+    def to_polars(self) -> pl.dataframe.frame.DataFrame :
+        pass
+    def transtype(self) -> None :
+        pass
+    def select(self, questing):
+        pass
+    @property
+    def shape(self):
+        pass
+    @property
+    def type(self):
+        pass
+    @property
+    def columns(self):
+        pass
+    def groupby(self):
+        pass
+    def head(self):
+        pass
+    def tail(self):
+        pass
+    def sort(self):
+        pass
+
+
+
 class simreader(object):
     """
     快捷读取数据，并根据数据量选择polars或者pandas，
@@ -81,7 +122,8 @@ class simreader(object):
             self.columns = file.columns
         elif os.path.isdir(file):
             files = os.listdir(file)
-            rfun = lambda x: getreader(os.path.join(file,x))(os.path.join(file,x),**args)
+            tfun, self.__server = getreader(os.path.join(file,x))
+            rfun = lambda x: (os.path.join(file,x),**args)
             tmp = list(map(rfun, files))
             self.__data = dict(zip(files,tmp))
             self.columns = files
@@ -136,7 +178,7 @@ def getreader(dirfile):
         }
     }
     fna = dirfile.split(".")[-1]
-    return LFUN[is_simple][fna]
+    return (LFUN[is_simple][fna], is_simple)
 
 def readZipData(dirfile, dname, tmpRoot = None, **args) -> simreader:
     '''

@@ -54,6 +54,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # Packages
 ###################
 
+from collections.abc import Iterable
+from functools import reduce
 import os
 
 ###################
@@ -79,7 +81,7 @@ iris_info = """
 数据来源： http://archive.ics.uci.edu/ml/datasets/Iris
 """
 iris_zip = (
-    os.path.join(_curDir, "simData/iris.zip"),
+    os.path.join(_curDir, "Data/iris.zip"),
     "iris.data",
     ['sepal_length','sepal_width','petal_length','petal_width','class'],
     iris_info
@@ -89,6 +91,16 @@ iris_zip = (
 # Functions
 ###################
 
+def sum(x: Iterable) -> Iterable :
+    res = reduce(lambda x,y: x+y, x)
+    return res
+
+def add(x: Iterable, y: Iterable) -> Iterable :
+    try:
+        tmp = list(zip(x,y))
+        return [sum(i) for i in tmp]
+    except:  # noqa: E722
+        raise ValueError
 
 ###################
 # Test - Main

@@ -1,0 +1,4 @@
+pandas >= 2.0
+numnpy >= 1.26
+pendulum >= 3.0
+polars >= 0.20

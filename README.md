@@ -14,3 +14,14 @@
 - [ ] simreader : 半成品……
 - [ ] simplot : 未开始
 - [ ] simdata : 粗制滥造中……
+
+**使用说明**
+
+1. 需要提前使用pip安装如下package：
+    - pandas
+    - numpy
+    - polars[all]
+    - pendulum
+2. 使用 `pip install -r ./requirements.txt` 快速安装所需前置包。
+3. git clone到本地使用 `import` 引用使用。
+4. 各包的具体使用请参考对应脚本中的说明。

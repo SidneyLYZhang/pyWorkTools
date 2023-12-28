@@ -62,6 +62,46 @@ import os
 # Classes
 ###################
 
+class vecspace(object):
+    """
+    解决python list的一些计算问题
+    """
+    def __init__(self, data = None) -> None:
+        if data is None :
+            self.__data = []
+        elif isinstance(data, Iterable):
+            self.__data = data
+        else:
+            self.__data = [data]
+        if isinstance(data, str):
+            self.__str = True
+        else:
+            self.__str = False
+    def __str__(self) -> str:
+        tdt = str(self.__data)
+        pstr = "vecSpace!{}" if "[" in tdt else "vecSpace!\n{}"
+        return pstr.format(tdt)
+    def __repr__(self) -> str:
+        return self.__str__()
+    def __len__(self) -> int :
+        return len(self.__data)
+    def __add__(self, y):
+        if self.__str :
+            tmp = [chr(ord(x)+y) for x in self.__data]
+            return vecspace(reduce(lambda x,y: x+y, tmp))
+        else:
+            if isinstance(self.__data, list):
+                tmp = 
+                return vecspace()
+            else:
+                tmp = vecspace(self.__data + y) if len(self) else vecspace(y)
+                return tmp
+    def __radd__(self, y):
+        pass
+    def __mul__(self, y):
+        pass
+    def __rmul__(self, x):
+        pass
 
 ###################
 # Static Data
@@ -90,6 +130,13 @@ iris_zip = (
 ###################
 # Functions
 ###################
+
+'''
+定义向量空间的运算:
+
+1. 加法 add
+2. 乘法 mul
+'''
 
 def sum(x: Iterable) -> Iterable :
     res = reduce(lambda x,y: x+y, x)

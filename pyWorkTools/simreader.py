@@ -72,9 +72,27 @@ import shutil
 
 class simDataFrame(object):
     def __init__(self, data) -> None:
-        pass
-    def __len__(self) -> int :
-        pass
+        x = str(type(oData))
+        self.__lazy = True if "LazyFrame" in x else False
+        if "polars" in x :
+            oData = data
+        elif "pandas" in x :
+            oData = pl.from_pandas(data)
+        elif "dask" in x :
+            oData = pl.from_pandas(data.compute())
+        elif "ndarray" in x :
+            oData = pl.from_numpy(data)
+        elif "<class 'dict'>" == x:
+            oData = pl.from_dict(data)
+        else:
+            raise ValueError("使用了不支持的数据!")
+        self.__data = oData
+    def __len__(self) -> int|None:
+        if self.__lazy :
+            print("Currently in Lazy mode, so the data length cannot be provided!")
+            return None
+        else:
+            return len(self.__data)
     def __getitem__(self, key):
         pass
     def __setitem__(self,key,value) -> None:
@@ -99,6 +117,10 @@ class simDataFrame(object):
         pass
     @property
     def columns(self):
+        pass
+    def append(self):
+        pass
+    def join(self):
         pass
     def groupby(self):
         pass

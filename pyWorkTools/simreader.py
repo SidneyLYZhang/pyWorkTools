@@ -17,6 +17,8 @@ Requirement:
 
 - pandas
 - polars
+- dask
+- veax
 - numpy
 
 Instruction:
@@ -71,19 +73,40 @@ import shutil
 ###################
 
 class simDataFrame(object):
+    '''
+    尽量转换为polars进行处理；
+    对于dask、veax不进行转换，使用原始类型处理；
+    统一提供以下运算：
+    - 指定列数据
+    - 按规则选择
+    - 聚集计算或透视表计算
+    - 取数据的头尾数据
+    - 添加/合并数据
+    - 排序
+    '''
     def __init__(self, data) -> None:
         x = str(type(oData))
         self.__lazy = True if "LazyFrame" in x else False
         if "polars" in x :
             oData = data
+            self.__type = "Ori"
         elif "pandas" in x :
             oData = pl.from_pandas(data)
+            self.__type = "Ori"
         elif "dask" in x :
-            oData = pl.from_pandas(data.compute())
+            oData = data
+            self.__type = "dask"
+            self.__lazy = True
+        elif "veax" in x :
+            oData = data
+            self.__type = "veax"
+            self.__lazy = True
         elif "ndarray" in x :
             oData = pl.from_numpy(data)
+            self.__type = "Ori"
         elif "<class 'dict'>" == x:
             oData = pl.from_dict(data)
+            self.__type = "Ori"
         else:
             raise ValueError("使用了不支持的数据!")
         self.__data = oData
@@ -168,7 +191,7 @@ def getreader(dirfile):
     fna = dirfile.split(".")[-1]
     return (LFUN[is_simple][fna], is_simple)
 
-def simreader(files, ) -> simDataFrame :
+def simreader(files, **args) -> simDataFrame :
     pass
 
 def readZipData(dirfile, dname, tmpRoot = None, **args) -> simreader:

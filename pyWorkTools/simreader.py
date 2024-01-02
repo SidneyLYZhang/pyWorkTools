@@ -132,40 +132,6 @@ class simDataFrame(object):
         pass
 
 
-
-class simreader(object):
-    """
-    快捷读取数据，并根据数据量选择polars或者pandas，
-    并提供统一的简介外部接口，方便引用使用。
-    """
-    def __init__(self, file, **args) -> None:
-        if isinstance(file, pd.DataFrame) or isinstance(file, pd.Series):
-            self.__data = file if isinstance(file, pd.DataFrame) else pd.DataFrame({file.name:file})
-            self.columns = file.columns
-        elif os.path.isdir(file):
-            files = os.listdir(file)
-            tfun, self.__server = getreader(os.path.join(file,x))
-            rfun = lambda x: (os.path.join(file,x),**args)
-            tmp = list(map(rfun, files))
-            self.__data = dict(zip(files,tmp))
-            self.columns = files
-        else:
-            self.__data = getreader(file)(file, **args)
-            self.columns = self.__data.columns
-        self.shape = self.__data.shape if isinstance(self.__data, pd.DataFrame) else (len(self.__data), list(map(lambda x: x.shape,list(self.__data.values()))))
-    def to_dataframe(self):
-        return self.__data.values() if isinstance(self.__data, dict) else self.__data
-    def __len__(self):
-        return self.__data.shape[0]
-    def __getitem__(self,key):
-        return simreader(self.__data[key])
-    def __setitem__(self,key,value):
-        self.__data[key] = value
-    def __str__(self) -> str:
-        return str(self.__data)
-    def __repr__(self) -> str:
-        return self.__str__()
-
 ###################
 # Static Data
 ###################
@@ -201,6 +167,9 @@ def getreader(dirfile):
     }
     fna = dirfile.split(".")[-1]
     return (LFUN[is_simple][fna], is_simple)
+
+def simreader(files, ) -> simDataFrame :
+    pass
 
 def readZipData(dirfile, dname, tmpRoot = None, **args) -> simreader:
     '''

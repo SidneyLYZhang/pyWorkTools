@@ -56,52 +56,53 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections.abc import Iterable
 from functools import reduce
+import re
 import os
 
 ###################
 # Classes
 ###################
 
-class vecspace(object):
-    """
-    解决python list的一些计算问题
-    """
-    def __init__(self, data = None) -> None:
-        if data is None :
-            self.__data = []
-        elif isinstance(data, Iterable):
-            self.__data = data
-        else:
-            self.__data = [data]
-        if isinstance(data, str):
-            self.__str = True
-        else:
-            self.__str = False
-    def __str__(self) -> str:
-        tdt = str(self.__data)
-        pstr = "vecSpace!{}" if "[" in tdt else "vecSpace!\n{}"
-        return pstr.format(tdt)
-    def __repr__(self) -> str:
-        return self.__str__()
-    def __len__(self) -> int :
-        return len(self.__data)
-    def __add__(self, y):
-        if self.__str :
-            tmp = [chr(ord(x)+y) for x in self.__data]
-            return vecspace(reduce(lambda x,y: x+y, tmp))
-        else:
-            if isinstance(self.__data, list):
-                tmp = 
-                return vecspace()
-            else:
-                tmp = vecspace(self.__data + y) if len(self) else vecspace(y)
-                return tmp
-    def __radd__(self, y):
-        pass
-    def __mul__(self, y):
-        pass
-    def __rmul__(self, x):
-        pass
+# class vecspace(object):
+#     """
+#     解决python list的一些计算问题
+#     """
+#     def __init__(self, data = None) -> None:
+#         if data is None :
+#             self.__data = []
+#         elif isinstance(data, Iterable):
+#             self.__data = data
+#         else:
+#             self.__data = [data]
+#         if isinstance(data, str):
+#             self.__str = True
+#         else:
+#             self.__str = False
+#     def __str__(self) -> str:
+#         tdt = str(self.__data)
+#         pstr = "vecSpace!{}" if "[" in tdt else "vecSpace!\n{}"
+#         return pstr.format(tdt)
+#     def __repr__(self) -> str:
+#         return self.__str__()
+#     def __len__(self) -> int :
+#         return len(self.__data)
+#     def __add__(self, y):
+#         if self.__str :
+#             tmp = [chr(ord(x)+y) for x in self.__data]
+#             return vecspace(reduce(lambda x,y: x+y, tmp))
+#         else:
+#             if isinstance(self.__data, list):
+#                 tmp = 
+#                 return vecspace()
+#             else:
+#                 tmp = vecspace(self.__data + y) if len(self) else vecspace(y)
+#                 return tmp
+#     def __radd__(self, y):
+#         pass
+#     def __mul__(self, y):
+#         pass
+#     def __rmul__(self, x):
+#         pass
 
 ###################
 # Static Data
@@ -132,22 +133,53 @@ iris_zip = (
 ###################
 
 '''
-定义向量空间的运算:
+增加List运算模式，实现类向量空间运算:
 
 1. 加法 add
 2. 乘法 mul
 '''
 
-def sum(x: Iterable) -> Iterable :
-    res = reduce(lambda x,y: x+y, x)
+# def sum(x: Iterable) -> Iterable :
+#     res = reduce(lambda x,y: x+y, x)
+#     return res
+
+# def add(x: Iterable, y: Iterable) -> Iterable :
+#     try:
+#         tmp = list(zip(x,y))
+#         return [sum(i) for i in tmp]
+#     except:  # noqa: E722
+#         raise ValueError
+
+def x_in_self(x, l_list:Iterable) -> list:
+    '''
+    把包含x的l_list元素取出来。
+    '''
+    if isinstance(l_list,str):
+        ot = [j for j in str(x)]
+        res = [i for i in l_list if i in ot]
+    else:
+        res = [i for i in l_list if x in i]
     return res
 
-def add(x: Iterable, y: Iterable) -> Iterable :
-    try:
-        tmp = list(zip(x,y))
-        return [sum(i) for i in tmp]
-    except:  # noqa: E722
-        raise ValueError
+def exclude_x(l_list:Iterable, x, mode = "str") -> list:
+    '''
+    在类列表中剔除包含指定字符的元素，或提出满足匹配关系的元素。
+    '''
+    if mode not in ["str","re"] :
+        raise ValueError("An Unsupported Mode is used...")
+    if mode == "str" :
+        if isinstance(l_list,str):
+            ot = [j for j in str(x)]
+            res = [i for i in l_list if i not in ot]
+        else:
+            res = [i for i in l_list if x not in i]
+    if mode == "re" :
+        if isinstance(l_list,str):
+            res = [re.match(x,l_list).group()]
+        else:
+            res = [i for i in l_list if re.match(x,i)]
+    return res
+
 
 ###################
 # Test - Main

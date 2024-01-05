@@ -280,10 +280,7 @@ def gap_youtube(keydate = None, interval = "1 month"):
     - 最近7天， `gap_youtube(interval = "1 weeks")`；
     - 上个月： `gap_youtube()`。
     '''
-    if keydate :
-        tdt = pdm.parse(keydate, tz=tzones.Beijing())
-    else:
-        tdt = pdm.now()
+    tdt = pdm.parse(keydate, tz=tzones.Beijing()) if keydate else pdm.now()
     ointerval = interval.split(' ') if "s" in interval else (interval+"s").split(' ')
     bgp = ointerval[-1][:-1]
     res = [
